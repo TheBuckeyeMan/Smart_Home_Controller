@@ -1,4 +1,4 @@
-name: Smart Home Controller CI/CD Pipeline
+name: Smart Home Controller CI/CD Pipeline - EC2 Application
 
 on:
   push:
@@ -49,7 +49,7 @@ jobs:
 
       - name: Building Docker Image
         run: |
-          docker build -t $DOCKER_IMAGE_NAME .
+          docker buildx build --platform linux/arm64 -t $DOCKER_IMAGE_NAME .
     
       - name: Save Docker Image as Artifact
         run: |
