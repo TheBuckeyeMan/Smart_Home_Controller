@@ -12,14 +12,15 @@ import lombok.extern.slf4j.Slf4j;
 public class GetController {
     
     @GetMapping("/testec2")
-    public void testEc2(){
-        log.info("The Endpoint /testec2 was called and is functioning as expected");
+    public String testEc2(){
+        return "The Endpoint /testec2 was called and is functioning as expected";
     }
 
     @GetMapping("/testpi")
-    public void testPi(){
+    public String testPi(){
         log.info("Attempting to Trigger Rasberi Pi Device");
-    }
+        return "The Endpoint /testpi was triggered successfully";
+    }   
 
 
 
