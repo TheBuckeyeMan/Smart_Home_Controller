@@ -3,14 +3,19 @@ package net.smart.home.controller.Controller.GET;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import lombok.extern.slf4j.Slf4j;
+import net.smart.home.controller.MQTT.MQTTPublisher;
 
 @RequestMapping("/prod")
 @Slf4j
 @RestController
 public class GetController {
-    
+    private final MQTTPublisher mqttPublisher;
+
+    public GetController(MQTTPublisher mqttPublisher){
+        this.mqttPublisher = mqttPublisher;
+    }
+
     @GetMapping("/testec2")
     public String testEc2(){
         return "The Endpoint /testec2 was called and is functioning as expected";
@@ -19,9 +24,13 @@ public class GetController {
     @GetMapping("/testpi")
     public String testPi(){
         log.info("Attempting to Trigger Rasberi Pi Device");
+        mqttPublisher.sendMessage("{ \"command\": \"turn_on_light\" }", "iot/smart-home/commands");
+        log.info("The Raspberry Pi Was Triggered successfully!");
         return "The Endpoint /testpi was triggered successfully";
     }   
 
-
-
+    @GetMapping("/sendmessage")
+    public String sendMessage(String message){
+        return "Message sent to IoT Core: " + message;
+    }
 }

@@ -1,0 +1,4 @@
+aws:
+  iot:
+    brokerendpoint: ${IOT_BROKERENDPOINT}
+    topic: ${IOT_TOPIC}
