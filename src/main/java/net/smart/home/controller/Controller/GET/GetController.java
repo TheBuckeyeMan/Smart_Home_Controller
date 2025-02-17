@@ -39,7 +39,7 @@ public class GetController {
         String payload = "{ \"command\": \"turn_on_light\" }";
         String topic = "iot/smart-home/commands";
         log.info("Attempting to send message:" + " to the topic: " + topic + " At the broker of: " + brokerUrl);
-        mqttPublisher.sendMessage(payload, topic, topic);
+        mqttPublisher.sendMessage(payload, topic, brokerUrl);
         log.info("Sucessfully sent the message to the required Location at: " + topic + "and at: " + brokerUrl);
         return "Message sent to IoT Core";
     }
