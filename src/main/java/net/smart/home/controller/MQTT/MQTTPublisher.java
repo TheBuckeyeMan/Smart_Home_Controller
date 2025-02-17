@@ -1,62 +1,54 @@
 package net.smart.home.controller.MQTT;
 
-import java.util.UUID;
-
 import org.eclipse.paho.client.mqttv3.MqttClient;
-import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
-import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Service
-public class MQTTPublisher {
+public class MQTTPublisher implements MQTTPublisherInterface{
     private static final Logger log = LoggerFactory.getLogger(MQTTPublisher.class);
+    private final MQTTConnect mqttConnect;
 
-    @Value("${aws.iot.brokerendpoint}")
-    private String brokerUrl;
+    public MQTTPublisher(MQTTConnect mqttConnect){
+        this.mqttConnect = mqttConnect;
+    }
 
-    public void sendMessage(String payLoad, String topic){
+    @Override
+    public void sendMessage(String payload, String topic, String brokerUrl){
         try{
-            //Validate Message Contents
-            validateArgs(payLoad, topic);
+            //Validate Inputs
+            validateArgs(payload, topic);
 
-            String clientId = "EC2-SpringBoot-" + UUID.randomUUID();
-            MqttClient client = new MqttClient("ssl://" + brokerUrl + ":8883", clientId, new MemoryPersistence());
+            //Get the client from the connection we set up in connect, reconnect if disconnected
+            MqttClient client = mqttConnect.getClient();
+            if (client == null || !client.isConnected()){
+                log.warn("MQTT client is not connected. Attempting reconnection...");
+                mqttConnect.init(brokerUrl);
+                client = mqttConnect.getClient();
+            }
 
-            MqttConnectOptions options = new MqttConnectOptions();
-            options.setCleanSession(true);
-
-            log.info("Attempting to COnnect to AWS IoT Core");
-            client.connect(options);
-            log.info("Successfully Connected to AWS IoT Core");
-
-
-            MqttMessage message = new MqttMessage(payLoad.getBytes());
-            message.setQos(1);
-            client.publish(topic, message);
-
-            log.info("Message Published" + payLoad);
-            client.disconnect();
-
-
-        } catch (Exception e) {
-            log.error("Error occured while attempting to make the MQTT Request", e.getMessage(), e);
+            //Send message if we are connected
+            if (client.isConnected()){
+                MqttMessage message = new MqttMessage(payload.getBytes());
+                message.setQos(1);
+                client.publish(topic, message);
+                log.info("Message was successfully published to Topic: " + topic + " message: " + payload + " brokerUrl: " + brokerUrl);
+            } else {
+                log.error("Error occured while attempting to send message to MQTT Topic line 44 MQTTPublisher.java");
+            }
+        } catch (Exception e){
+            log.error("Error occured while attempting to send message to MQTT Topic line 49 MQTTPublisher.java", e.getMessage(), e);
         }
     }
 
-    private void validateArgs(String payLoad, String topic){
-        if (payLoad == null || payLoad.isEmpty()) {
-            throw new IllegalArgumentException("The contents passed as the payLoad is null");
+    private void validateArgs(String payload, String topic){
+        if (payload == null || payload.isEmpty()){
+            throw new IllegalArgumentException("The contents passed to the payload variable while attempting to send a message to the MQTT Topic was null");
         }
         if (topic == null || topic.isEmpty()){
-            throw new IllegalArgumentException("The contents passed as the topic is null");
+            throw new IllegalArgumentException("The contents passed to the topic variable while attempting to send a message to the MQTT Topic was null");
         }
     }
-    
-
-
-
 }

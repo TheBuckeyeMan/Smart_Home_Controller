@@ -1,5 +1,6 @@
 package net.smart.home.controller.Controller.GET;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -11,6 +12,10 @@ import net.smart.home.controller.MQTT.MQTTPublisher;
 @RestController
 public class GetController {
     private final MQTTPublisher mqttPublisher;
+
+    //Currently the broker of the IoT COre for the Smart Home
+    @Value("${aws.iot.brokerendpoint}")
+    private String brokerUrl;
 
     public GetController(MQTTPublisher mqttPublisher){
         this.mqttPublisher = mqttPublisher;
@@ -24,13 +29,18 @@ public class GetController {
     @GetMapping("/testpi")
     public String testPi(){
         log.info("Attempting to Trigger Rasberi Pi Device");
-        mqttPublisher.sendMessage("{ \"command\": \"turn_on_light\" }", "iot/smart-home/commands");
+        mqttPublisher.sendMessage("{ \"command\": \"turn_on_light\" }", "iot/smart-home/commands", brokerUrl);
         log.info("The Raspberry Pi Was Triggered successfully!");
         return "The Endpoint /testpi was triggered successfully";
     }   
 
     @GetMapping("/sendmessage")
-    public String sendMessage(String message){
-        return "Message sent to IoT Core: " + message;
+    public String sendMessage(){
+        String payload = "{ \"command\": \"turn_on_light\" }";
+        String topic = "iot/smart-home/commands";
+        log.info("Attempting to send message:" + " to the topic: " + topic + " At the broker of: " + brokerUrl);
+        mqttPublisher.sendMessage(payload, topic, topic);
+        log.info("Sucessfully sent the message to the required Location at: " + topic + "and at: " + brokerUrl);
+        return "Message sent to IoT Core";
     }
 }
