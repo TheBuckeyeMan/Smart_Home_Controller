@@ -16,7 +16,7 @@ public class MQTTPublisher implements MQTTPublisherInterface{
     }
 
     @Override
-    public void sendMessage(String payload, String topic, String brokerUrl){
+    public void sendMessage(String payload, String topic, String brokerUrl, String secretName, String rootCaPath){
         try{
             //Validate Inputs
             validateArgs(payload, topic);
@@ -25,7 +25,7 @@ public class MQTTPublisher implements MQTTPublisherInterface{
             MqttClient client = mqttConnect.getClient();
             if (client == null || !client.isConnected()){
                 log.warn("MQTT client is not connected. Attempting reconnection...");
-                mqttConnect.init(brokerUrl);
+                mqttConnect.init(brokerUrl, secretName, rootCaPath);
                 client = mqttConnect.getClient();
             }
 

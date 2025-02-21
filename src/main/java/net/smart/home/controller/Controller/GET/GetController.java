@@ -17,6 +17,12 @@ public class GetController {
     @Value("${aws.iot.brokerendpoint}")
     private String brokerUrl;
 
+    @Value("${aws.secretmanager.secretname}")
+    private String secretName;
+
+	@Value("${aws.secretmanager.rootcapath}")
+    private String rootCaPath;
+    
     public GetController(MQTTPublisher mqttPublisher){
         this.mqttPublisher = mqttPublisher;
     }
@@ -29,7 +35,7 @@ public class GetController {
     @GetMapping("/testpi")
     public String testPi(){
         log.info("Attempting to Trigger Rasberi Pi Device");
-        mqttPublisher.sendMessage("{ \"command\": \"turn_on_light\" }", "iot/smart-home/commands", brokerUrl);
+        mqttPublisher.sendMessage("{ \"command\": \"turn_on_light\" }", "iot/smart-home/commands", brokerUrl, secretName, rootCaPath);
         log.info("The Raspberry Pi Was Triggered successfully!");
         return "The Endpoint /testpi was triggered successfully";
     }   
@@ -39,7 +45,7 @@ public class GetController {
         String payload = "{ \"command\": \"turn_on_light\" }";
         String topic = "iot/smart-home/commands";
         log.info("Attempting to send message:" + " to the topic: " + topic + " At the broker of: " + brokerUrl);
-        mqttPublisher.sendMessage(payload, topic, brokerUrl);
+        mqttPublisher.sendMessage(payload, topic, brokerUrl, secretName, rootCaPath);
         log.info("Sucessfully sent the message to the required Location at: " + topic + "and at: " + brokerUrl);
         return "Message sent to IoT Core";
     }

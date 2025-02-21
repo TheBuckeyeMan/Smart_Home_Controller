@@ -19,6 +19,12 @@ public class SmartHomeControllerApplication {
 
 	@Value("${aws.iot.brokerendpoint}")
     private String brokerUrl;
+
+	@Value("${aws.secretmanager.secretname}")
+    private String secretName;
+
+	@Value("${aws.secretmanager.rootcapath}")
+    private String rootCaPath;
 	
 	public static void main(String[] args) {
 		SpringApplication.run(SmartHomeControllerApplication.class, args);
@@ -26,7 +32,7 @@ public class SmartHomeControllerApplication {
 
 	@PostConstruct
 	public void initMQTT(){
-		mqttConnect.init(brokerUrl);
+		mqttConnect.init(brokerUrl, secretName, rootCaPath );
 	}
 
 }
