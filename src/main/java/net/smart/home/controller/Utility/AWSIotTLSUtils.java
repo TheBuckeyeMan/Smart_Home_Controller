@@ -85,9 +85,12 @@ public class AWSIotTLSUtils{
         String key = new String(Files.readAllBytes(Paths.get(keyPath)))
                 .replace("-----BEGIN PRIVATE KEY-----", "")
                 .replace("-----END PRIVATE KEY-----", "")
+                .replaceAll("\\r", "")  // Remove Windows-style carriage returns
                 .trim();
          //       .replaceAll("\\s+", "");
 
+        log.info("The length of the key is " + key.length());
+        log.info(key);
         byte[] decodedKey = Base64.getDecoder().decode(key);
         PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(decodedKey);
         KeyFactory keyFactory = KeyFactory.getInstance("RSA");
