@@ -36,8 +36,8 @@ public class MQTTConnect implements MQTTConnectInterface{
             log.info("Attempting to Fetch AWS Credentials from AWS Secrets Manager...");
             String secretJson = awsSecretsRetriever.getSecret(secretName);
             if (secretJson == null || secretJson.isEmpty()){
-                log.error("Error occured while attempting to get AWS Secrets From AWS Secrets Manager :( Line 35 MQTTConnect.java");
-                throw new RuntimeException("Unable to Retrieve certificates from AWS Secrets Manager Line 35 MQTTConnect.java");
+                log.error("Error occured while attempting to get AWS Secrets From AWS Secrets Manager :( Line 39 MQTTConnect.java");
+                throw new RuntimeException("Unable to Retrieve certificates from AWS Secrets Manager Line 40 MQTTConnect.java");
             } else {
                 log.info("Successfully Retrieved Secrets from Secrets Manager!");
             }
