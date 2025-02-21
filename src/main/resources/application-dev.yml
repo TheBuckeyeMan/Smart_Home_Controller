@@ -1,3 +1,6 @@
 aws:
   iot:
     brokerendpoint: ${IOT_BROKERENDPOINT}
+  secretmanager:
+    secretname: "ec2_smart_home_mqtt_cert_for_controller"
+    rootcapath: "/tmp/AmazonRootCA1.pem"
