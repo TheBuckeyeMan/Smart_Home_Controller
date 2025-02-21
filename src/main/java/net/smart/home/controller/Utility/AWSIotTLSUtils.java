@@ -85,7 +85,8 @@ public class AWSIotTLSUtils{
         String key = new String(Files.readAllBytes(Paths.get(keyPath)))
                 .replace("-----BEGIN PRIVATE KEY-----", "")
                 .replace("-----END PRIVATE KEY-----", "")
-                .replaceAll("\\s+", "");
+                .trim();
+         //       .replaceAll("\\s+", "");
 
         byte[] decodedKey = Base64.getDecoder().decode(key);
         PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(decodedKey);
