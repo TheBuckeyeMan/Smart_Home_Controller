@@ -20,6 +20,10 @@ public class AWSIotTLSUtils{
     private static final Logger log = LoggerFactory.getLogger(AWSIotTLSUtils.class);
 
     public static SSLSocketFactory getSocketFactory(String certPath, String keyPath, String caPath) throws Exception{
+
+        //Validate caPath
+        validateRootCAFile(caPath);
+
         //Load Ca Certificate
         log.info("Attempting to Load the Ca Certificate - AWSIotTLSUtils.java");
         CertificateFactory certFactory = CertificateFactory.getInstance("X.509");
@@ -72,5 +76,12 @@ public class AWSIotTLSUtils{
         PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(decodedKey);
         KeyFactory keyFactory = KeyFactory.getInstance("RSA");
         return keyFactory.generatePrivate(keySpec);
+    }
+
+    private static void validateRootCAFile(String caPath) {
+        File caFile = new File(caPath);
+        if (!caFile.exists()) {
+            throw new RuntimeException("Root CA file missing at: " + caPath + ". Please download it before starting the application.");
+        }
     }
 }

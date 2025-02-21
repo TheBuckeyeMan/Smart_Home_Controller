@@ -1,5 +1,7 @@
 package net.smart.home.controller;
 
+import java.io.File;
+
 import org.eclipse.paho.client.mqttv3.internal.wire.MqttAck;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -32,7 +34,7 @@ public class SmartHomeControllerApplication {
 
 	@PostConstruct
 	public void initMQTT(){
-		mqttConnect.init(brokerUrl, secretName, rootCaPath );
+		mqttConnect.init(brokerUrl, secretName, rootCaPath);
 	}
 
 }
