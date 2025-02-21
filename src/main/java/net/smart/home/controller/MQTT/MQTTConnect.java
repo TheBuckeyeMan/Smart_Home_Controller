@@ -71,13 +71,13 @@ public class MQTTConnect implements MQTTConnectInterface{
             log.info("Successfully connected to AWS IOT Core at broker" + brokerUrl);
 
         } catch (MqttException e){
-            log.error("Error occured at MQTTConnect.java line 51");
+            log.error("Error occured at MQTTConnect.java line 74");
             log.error("❌ MQTT Exception while connecting to AWS IoT Core: {}", e.getMessage(), e);
             log.error("❌ Reason Code: {}", e.getReasonCode());
             log.error("❌ Cause: {}", e.getCause());
-            log.error("Error occured while attempting to connect to AWS IOT Core broker Line 39 MQTTConnect.java", e.getMessage(), e);
+            log.error("Error occured while attempting to connect to AWS IOT Core broker Line 78 MQTTConnect.java", e.getMessage(), e);
         } catch (Exception e) {
-            log.error("Error occured at MQTTConnect.java line 57");
+            log.error("Error occured at MQTTConnect.java line 80");
             log.error("❌ Unexpected Exception while connecting to AWS IoT Core!", e.getMessage(), e);
         }
     }
