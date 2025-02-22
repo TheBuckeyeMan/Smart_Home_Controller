@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import lombok.extern.slf4j.Slf4j;
+import net.smart.home.controller.MQTT.MQTTConnect;
 import net.smart.home.controller.MQTT.MQTTPublisher;
 
 @RequestMapping("/prod")
@@ -12,6 +13,7 @@ import net.smart.home.controller.MQTT.MQTTPublisher;
 @RestController
 public class GetController {
     private final MQTTPublisher mqttPublisher;
+    private MQTTConnect mqttConnect;
 
     //Currently the broker of the IoT COre for the Smart Home
     @Value("${aws.iot.brokerendpoint}")
@@ -22,9 +24,10 @@ public class GetController {
 
 	@Value("${aws.secretmanager.rootcapath}")
     private String rootCaPath;
-    
-    public GetController(MQTTPublisher mqttPublisher){
+
+    public GetController(MQTTPublisher mqttPublisher, MQTTConnect mqttConnect){
         this.mqttPublisher = mqttPublisher;
+        this.mqttConnect = mqttConnect;
     }
 
     @GetMapping("/testec2")
@@ -48,5 +51,12 @@ public class GetController {
         mqttPublisher.sendMessage(payload, topic, brokerUrl, secretName, rootCaPath);
         log.info("Sucessfully sent the message to the required Location at: " + topic + "and at: " + brokerUrl);
         return "Message sent to IoT Core";
+    }
+
+    @GetMapping("/reconnect")
+    public void reconnectToTopic(){
+        log.info("Attempting to Reconnect to Topic...");
+        mqttConnect.init(brokerUrl, secretName, rootCaPath);
+        log.info("Reconnect was successful!");
     }
 }
