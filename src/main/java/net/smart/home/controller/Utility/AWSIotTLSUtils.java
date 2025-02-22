@@ -14,6 +14,8 @@ import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.util.Base64;
+import org.bouncycastle.util.io.pem.PemObject;
+import org.bouncycastle.util.io.pem.PemReader;
 
 @Service
 public class AWSIotTLSUtils{
@@ -89,6 +91,7 @@ public class AWSIotTLSUtils{
                 .trim();
          //       .replaceAll("\\s+", "");
 
+        //Comment our after debugging
         log.info("The length of the key is " + key.length());
         log.info(key);
         byte[] decodedKey = Base64.getDecoder().decode(key);

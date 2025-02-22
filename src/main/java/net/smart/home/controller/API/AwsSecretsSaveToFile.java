@@ -26,6 +26,8 @@ public class AwsSecretsSaveToFile implements AwsSecretsSaveToFileInterface{
         Map<String, String> secretMap = mapJson(secretJson);
         String certificate_pem = getPem(secretMap, "certificate_pem");
         String privateKeyPem = getPem(secretMap, "private_key");
+        log.info("The value of the Certificate from line 29 of AwsSecretsSaveToFile.java is: " + certificate_pem);
+        log.info("The value of the private key from line 30 of AwsSecretsSaveToFile.java is: " + privateKeyPem);
         
         try{
         //Write the Credentials to the files
