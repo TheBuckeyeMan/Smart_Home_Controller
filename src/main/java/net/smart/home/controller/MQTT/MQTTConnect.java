@@ -122,5 +122,4 @@ public class MQTTConnect implements MQTTConnectInterface{
 //         "/path/to/privateKey.pem",
 //         "/path/to/AmazonRootCA1.pem"
 //     ));
-
 //Look up chat gpt logs we have to see the next steps as I am taking a break
