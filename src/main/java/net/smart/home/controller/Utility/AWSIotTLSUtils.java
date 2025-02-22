@@ -86,63 +86,45 @@ public class AWSIotTLSUtils{
         return sslContext.getSocketFactory();
     }
 
-    // private static PrivateKey loadPrivateKey(String keyPath) throws Exception{
-    //     log.info("Attempting to Load Private Key... line 84 AWSIotTLSUtils.java");
-    //     String key = new String(Files.readAllBytes(Paths.get(keyPath)))
-    //             .replace("-----BEGIN PRIVATE KEY-----", "")
-    //             .replace("-----END PRIVATE KEY-----", "")
-    //             .replaceAll("\\r", "")  // Remove Windows-style carriage returns
-    //             .trim();
-    //      //       .replaceAll("\\s+", "");
-
-    //     //Comment our after debugging
-    //     log.info("The length of the key is " + key.length());
-    //     log.info(key);
-    //     byte[] decodedKey = Base64.getDecoder().decode(key);
-    //     PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(decodedKey);
-    //     KeyFactory keyFactory = KeyFactory.getInstance("RSA");
-    //     log.info("Successfully Loaded Private Key line 93 AWSIotTLSUtils.java");
-    //     return keyFactory.generatePrivate(keySpec);
-    // }
-
+    //This method is responsable for loading the private key
     private static PrivateKey loadPrivateKey(String keyPath) throws Exception{
-        log.info("Attempting to Load Private Key... line 105 AWSIotTLSUtils.java");
-        
+        log.info("Attempting to Load Private Key... line 90 AWSIotTLSUtils.java");
+
         try (PemReader pemReader = new PemReader(new FileReader(keyPath))){
             PemObject pemObject = pemReader.readPemObject();
             byte[] keyBytes = pemObject.getContent();
             KeyFactory keyFactory = KeyFactory.getInstance("RSA");
-
             try {
                 //Attempt to load as PKCS#8 first
-                log.info("Attempting to load Private key as PKCS#8... AWSIotTLSUtils.java line 114");
+                log.info("Attempting to load Private key as PKCS#8... AWSIotTLSUtils.java line 98");
                 PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(keyBytes);
-                log.info("Successfullly generated private key with PKCS#8 Encode! AWSIotTLSUtils.java line 116");
+                log.info("Successfullly generated private key with PKCS#8 Encode! AWSIotTLSUtils.java line 100");
                 return keyFactory.generatePrivate(keySpec);
             } catch (Exception e) {
-                log.warn("Failed to load key as PKCS#8 Attempting PKCS#1 conversion to PKCS#8... AWSIotTLSUtils.java line 119");
+                //It was able to pass private key via this method
+                log.warn("Failed to load key as PKCS#8 Attempting PKCS#1 conversion to PKCS#8... AWSIotTLSUtils.java line 104");
                 try(PEMParser pemParser = new PEMParser(new FileReader(keyPath))){
                     Object object = pemParser.readObject();
                     if (object instanceof PEMKeyPair){
                         PEMKeyPair pemKeyPair = (PEMKeyPair) object;
                         PrivateKeyInfo privateKeyInfo = PrivateKeyInfo.getInstance(pemKeyPair.getPrivateKeyInfo());
                         PKCS8EncodedKeySpec pkcs8Spec = new PKCS8EncodedKeySpec(privateKeyInfo.getEncoded());
-                        log.info("Successfullly generated private key with PKCS#8 converted from PKCS#1 Encode! AWSIotTLSUtils.java line 130");
+                        log.info("Successfullly generated private key with PKCS#8 converted from PKCS#1 Encode! AWSIotTLSUtils.java line 111");
                         return keyFactory.generatePrivate(pkcs8Spec);
                     }
                 }
-                throw new RuntimeException("Failed to parse PKCS#1 private key Line 134 of AWSIotTLSUtil.java");
+                throw new RuntimeException("Failed to parse PKCS#1 private key Line 115 of AWSIotTLSUtil.java");
             }
         }
     }
 
     private static void validateRootCAFile(String caPath) {
-        log.info("Attempting to Validate Root Ca Files... line 98 AWSIotTLSUtils.java");
+        log.info("Attempting to Validate Root Ca Files... line 121 AWSIotTLSUtils.java");
         File caFile = new File(caPath);
         if (!caFile.exists()) {
             throw new RuntimeException("Root CA file missing at: " + caPath + ". Please download it before starting the application.");
         } else {
-            log.info("Successfully Validated Root Ca Files line 93 AWSIotTLSUtils.java");
+            log.info("Successfully Validated Root Ca Files line 126 AWSIotTLSUtils.java");
         }
     }
 }
