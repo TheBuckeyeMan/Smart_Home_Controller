@@ -61,7 +61,7 @@ public class MQTTConnect implements MQTTConnectInterface{
             //Construct Connection of the client(This app) to the MQTT Topic
             MqttConnectOptions options = new MqttConnectOptions();
             options.setCleanSession(true);
-            options.setKeepAliveInterval(120);
+            options.setKeepAliveInterval(30);
             options.setAutomaticReconnect(true);
             options.setSocketFactory(AWSIotTLSUtils.getSocketFactory(certFilePath, keyFilePath, rootCaPath));
 
@@ -113,7 +113,6 @@ public class MQTTConnect implements MQTTConnectInterface{
         }
     }
 }
-
 //Things to do next
 //1. Get certificate, - new terraform code i guess we need to authenticate witha  cert even if we send messages to the topic, IAM ROles alone are not enough to authenticate us if we use MQTT(It is enough for http)
 //2. Update application to use the cert when we authenticate with the topic - wioll need to inject via environment vairables, and set on

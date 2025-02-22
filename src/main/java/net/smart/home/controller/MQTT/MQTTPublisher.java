@@ -40,7 +40,7 @@ public class MQTTPublisher implements MQTTPublisherInterface{
                     log.info("Attempting to build ther message from the payload... line 38 MQTTPublisher.java");
                     MqttMessage message = new MqttMessage(payload.getBytes());
                     message.setQos(1);
-                    log.info("Attempting to publish the message: " + message + " to the topic: " + topic + " line 41 MQTTPublisher.java");
+                    log.info("Attempting to publish the message: " + message + " to the topic: " + topic + " line 43 MQTTPublisher.java");
                     client.publish(topic, message);
                     log.info("Message was successfully published to Topic: " + topic + " message: " + payload + " brokerUrl: " + brokerUrl);
                 } catch (MqttException e) {
