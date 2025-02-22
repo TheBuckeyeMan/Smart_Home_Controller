@@ -61,7 +61,7 @@ public class MQTTConnect implements MQTTConnectInterface{
             //Construct Connection of the client(This app) to the MQTT Topic
             MqttConnectOptions options = new MqttConnectOptions();
             options.setCleanSession(true);
-            options.setKeepAliveInterval(60);
+            options.setKeepAliveInterval(120);
             options.setAutomaticReconnect(true);
             options.setSocketFactory(AWSIotTLSUtils.getSocketFactory(certFilePath, keyFilePath, rootCaPath));
 
