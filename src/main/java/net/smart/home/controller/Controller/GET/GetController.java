@@ -30,6 +30,13 @@ public class GetController {
         this.mqttConnect = mqttConnect;
     }
 
+    @GetMapping("/reconnect")
+    public void reconnectToTopic(){
+        log.info("Attempting to Reconnect to Topic...");
+        mqttConnect.init(brokerUrl, secretName, rootCaPath);
+        log.info("Reconnect was successful!");
+    }
+
     @GetMapping("/testec2")
     public String testEc2(){
         return "The Endpoint /testec2 was called and is functioning as expected";
@@ -38,25 +45,28 @@ public class GetController {
     @GetMapping("/testpi")
     public String testPi(){
         log.info("Attempting to Trigger Rasberi Pi Device");
-        mqttPublisher.sendMessage("{ \"command\": \"turn_on_light\" }", "iot/smart-home/commands", brokerUrl, secretName, rootCaPath);
+        mqttPublisher.sendMessage("{ \"command\": \"test\" }", "iot/smart-home/commands", brokerUrl, secretName, rootCaPath);
         log.info("The Raspberry Pi Was Triggered successfully!");
-        return "The Endpoint /testpi was triggered successfully";
+        return "Test message sent to the topic";
     }   
 
     @GetMapping("/sendmessage")
     public String sendMessage(){
-        String payload = "{ \"command\": \"turn_on_light\" }";
-        String topic = "iot/smart-home/commands";
+        String payload = "{ \"command\": \"trigger_cli\" }";
+        String topic = "iot/smart-home/test";
         log.info("Attempting to send message:" + payload + " to the topic: " + topic + " At the broker of: " + brokerUrl);
         mqttPublisher.sendMessage(payload, topic, brokerUrl, secretName, rootCaPath);
         log.info("Sucessfully sent the message to the required Location at: " + topic + "and at: " + brokerUrl);
         return "Message sent to IoT Core";
     }
 
-    @GetMapping("/reconnect")
-    public void reconnectToTopic(){
-        log.info("Attempting to Reconnect to Topic...");
-        mqttConnect.init(brokerUrl, secretName, rootCaPath);
-        log.info("Reconnect was successful!");
+    @GetMapping("/triggerlights")
+    public String triggerLights(){
+        String payload = "{ \"command\": \"turn_on_light\" }";
+        String topic = "iot/smart-home/sportslights";
+        log.info("Attempting to Trigger the smart home lights!");
+        mqttPublisher.sendMessage(payload, topic, brokerUrl, secretName, rootCaPath);
+        log.info("Successfully Sent message to trigger lights to aws core iot");
+        return "Smart home lights triggered successfully!";
     }
 }
